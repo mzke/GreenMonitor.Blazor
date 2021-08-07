@@ -1,0 +1,49 @@
+﻿<div class="bateria-status-titulo">Estado da bateria</div>
+<div class="bateria-status">
+    <div class="bateria-status-texto">@Texto</div>
+</div>
+
+@code {
+    private string Texto{ get; set; }
+
+    private int _status;
+
+    [Parameter]
+    public int Status{
+        get
+        {
+            return _status;
+        }
+        set
+        {
+            _status = value;
+            switch (_status)
+            {
+                case 100:
+                    Texto = "Subtensão";
+                    break;
+                case 198:
+                    Texto = "Descarregadas";
+                    break;
+                case 201:
+                    Texto = "Carregando com corrente constante (estágio 1 de 3)";
+                    break;
+                case 202:
+                    Texto = "Carregando com tensão constante (estágio 2 de 3)";
+                    break;
+                case 203:
+                    Texto = "Carregando em flutuação (estágio 3 de 3)";
+                    break;
+                case 204:
+                    Texto = "Em flutuação";
+                    break;
+                case 300:
+                    Texto = "Carregadas";
+                    break;
+                default:
+                    Texto = "";
+                    break;
+            }
+        } 
+    }
+}

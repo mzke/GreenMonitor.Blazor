@@ -1,0 +1,17 @@
+.medidor-borda{
+    border-left: 3px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+.medidor-titulo{
+    font-size: 9px;
+    margin-left: 10px;
+    text-transform: uppercase;
+    color: gray;
+}
+
+.medidor-valor{
+    font-size: large;
+    margin-left: 10px;
+    color: gray;
+}

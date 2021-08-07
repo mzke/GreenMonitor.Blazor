@@ -1,0 +1,134 @@
+﻿@using System.Timers
+
+<div class="progresso-titulo">@Titulo</div>
+<div style="display:flex; flex-wrap: nowrap; background-color: @CorFundo;">
+@for(var i = 0; i < (@Tamanho - 1); i++){
+    <div  style="background-color:@Led[i]; margin:2px; flex-grow:1; color:@Led[i];">-</div>
+    }
+    <div  style="visibility: @ValorVisibility ; background-color:@CorFundo; margin:2px; flex-grow:1; color:@CorLedOn; text-align:center">@( $"{_valor}{Unidade}") </div>
+</div>
+
+@code {
+
+    private List<string> Led;
+    private bool IsInicializado { get; set; }
+    private string ValorVisibility { get; set; } = "hidden";
+
+    [Parameter]
+    public string Unidade { get; set; }
+
+    [Parameter]
+    public string CorFundo { get; set; } = "#283747";
+
+    [Parameter]
+    public string Titulo { get; set; }
+
+    [Parameter]
+    public string CorLedOff { get; set; } = "#052A04";
+
+    [Parameter]
+    public string CorLedOn { get; set; } = "PaleGreen";
+
+    [Parameter]
+    public int Tamanho { get; set; }
+
+    [Parameter]
+    public int Maximo { get; set; }
+
+    private double _valor;
+    private Timer timer = new(1000);
+    private bool IsIndefinido { get; set; }
+    int icount = 0;
+
+
+    [Parameter]
+    public double Valor
+    {
+        set
+        {
+            _valor = Math.Round(value);
+            if (_valor >= 0)
+            {
+                SetIndefinido(false);
+                var ligados = Convert.ToInt32( _valor * Tamanho / Maximo);
+                SetLeds(ligados);
+            }
+            else
+            {
+                SetIndefinido(true);
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Led = new List<string>();
+        for (var i = 0; i < Tamanho; i++)
+            Led.Add(CorLedOff);
+        IsInicializado = true;
+        timer.Elapsed += (sender, eventArgs) => OnTimerCallback();
+        await base.OnInitializedAsync();
+    }
+
+    private void SetIndefinido(bool ligar)
+    {
+        // Timer stateTimer = null;
+        if (ligar)
+        {
+            if (!IsIndefinido){
+                // var autoEvent = new AutoResetEvent(false);
+                //  stateTimer = new Timer(CheckStatus, autoEvent, 1000, 1000); // https://docs.microsoft.com/pt-br/dotnet/api/system.threading.timer?view=net-5.0
+                IsIndefinido = true;
+                ValorVisibility = "hidden";
+                timer.Start();
+            }
+        }else{
+            //     stateTimer?.Dispose();// = null;
+            IsIndefinido = false;
+            ValorVisibility = "visible";
+            timer.Stop();
+        }
+    }
+
+    private void LedIndefinido()
+    {
+        icount++;
+        if (icount > Tamanho)
+        {
+            icount = 0;
+        }
+        SetLeds(icount);
+
+    }
+
+    private void SetLeds(int ligados)
+    {
+        if (IsInicializado)
+        {
+            for (var x = 0; x < Tamanho; x++)
+            {
+                if (x <= (ligados - 1))
+                {
+                    Led[x] = CorLedOn;
+                }
+                else
+                {
+                    Led[x] = CorLedOff;
+                }
+            }
+            StateHasChanged();
+        }
+    }
+
+    private void OnTimerCallback()
+    {
+        _ = InvokeAsync(() =>
+        {
+            LedIndefinido();
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose() => timer.Dispose();
+
+}

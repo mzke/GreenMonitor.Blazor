@@ -1,0 +1,49 @@
+﻿@page "/"
+@using MQTTnet;
+@using MQTTnet.Client.Options;
+@using MQTTnet.Extensions.ManagedClient;
+@using System.Text
+@using System.Globalization;
+@inject GreenMonitor.Blazor.Data.MosquittoService mosquitto
+
+<div class="container">
+    <h4 style="margin-top:40px;">Captação de Energia</h4>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col">
+            <Medidor Titulo="tensão" Value="@mosquitto.Usolar.ToString()" Unidade="V" Icone="fa-solar-panel"></Medidor>
+        </div>    
+        <div class="col"><Medidor Titulo="corrente" Value="@mosquitto.Isolar.ToString()" Unidade="A" Icone="fa-solar-panel"></Medidor></div> 
+    </div>
+    <div style="margin-top: 10px;"></div>
+    <Progresso Titulo="Potência Fotovoltaica" Unidade="W" Tamanho="20" Maximo="600" Valor="@mosquitto.Psolar"       ></Progresso>
+    <h4 style="margin-top:40px;">Armazenamento de Energia</h4>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col"><Medidor Titulo="tensão" Value="@mosquitto.Ubateria.ToString()" Unidade="V" Icone="fa-car-battery"></Medidor></div>    
+        <div class="col"><Medidor Titulo="corrente" Value="@mosquitto.Ibateria.ToString()" Unidade="A" Icone="fa-car-battery"></Medidor></div>    
+    </div>
+    <div style="margin-top: 10px;"></div>
+    <Progresso Titulo="Carga da Bateria" Unidade="%" Tamanho="20" Maximo="100" Valor="@mosquitto.CargaBateria"></Progresso>
+    <div style="margin-top: 10px;"></div>
+    <BateriaStatus Status="@mosquitto.Status" />
+    <h4 style="margin-top:40px;">Consumo de Energia</h4>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col"><Medidor Titulo="tensão" Value="@mosquitto.Uinversor.ToString()" Unidade="V" Icone="fa-plug"></Medidor></div>    
+        <div class="col"><Medidor Titulo="corrente" Value="@mosquitto.Iinversor.ToString()" Unidade="A" Icone="fa-plug"></Medidor></div>    
+    </div>
+    <div style="margin-top: 10px;"></div>
+    <Progresso Titulo="Consumo Verde" Unidade="W" Tamanho="20" Maximo="200" Valor="@mosquitto.Pinversor" />
+</div>
+
+@code{
+
+    protected override async Task OnInitializedAsync()
+    {
+        mosquitto.MensagemRecebida += MosquittoMensagemRecebida;
+    }
+
+    void MosquittoMensagemRecebida(object obj, EventArgs e)
+    {
+        InvokeAsync( StateHasChanged);
+    }
+      
+}

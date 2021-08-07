@@ -1,0 +1,7 @@
+﻿.progresso-titulo {
+    display: flex;
+    flex-wrap: nowrap;
+    font-size: 9px;
+    text-transform: uppercase;
+    color: gray;
+}

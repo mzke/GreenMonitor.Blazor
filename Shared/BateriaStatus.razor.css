@@ -1,0 +1,24 @@
+﻿.bateria-status {
+    display: flex;
+}
+
+
+
+.bateria-status-texto {
+    color: palegreen;
+    background-color: #053403;
+    font-size: 13px;
+    padding: 2px;
+    padding-left:5px;
+    flex-grow:1;
+}
+
+.bateria-status-titulo {
+    display: flex;
+    flex-wrap: nowrap;
+    font-size: 9px;
+    text-transform: uppercase;
+    color: gray;
+}
+
+
